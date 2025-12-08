@@ -10,7 +10,8 @@ Este é um teste prático para avaliar suas habilidades em desenvolvimento. Voc�
 2. **Implemente a API**: Endpoint `/analyze-feed` que processa mensagens
 3. **Garanta que todos os testes passem**: 6 casos obrigatórios + casos especiais
 4. **Otimize para performance**: <200ms para 1000 mensagens
-5. **Entregue o repositório**: Link público no GitHub
+5. **Criar um CI**: Ao menos 3 etapas de check
+6. **Entregue o repositório**: Link público no GitHub
 
 **🎯 Critérios de avaliação**: Algoritmos (50%) + Performance (30%) + Qualidade (20%)
 
@@ -213,6 +214,14 @@ followers = abs(hash(user_id.encode())) % 10000 + 100  # ainda não determiníst
 - Regex case-insensitive mas preservar case original
 - Ordem fixa: Intensificador → Negação → MBRAS
 
+## 💼 CI
+
+### GitActions
+- Criar um workflow para o git actions
+- No workflow implementar ao menos um CI de 3 etapas
+- Quanto mais completo e abrangente for o CI, melhor.
+- Ter ao menos uma etapa de checagem de testes unitarios.
+
 ## ✅ Checklist de Entrega
 
 ### Funcionalidade
@@ -239,6 +248,10 @@ followers = abs(hash(user_id.encode())) % 10000 + 100  # ainda não determiníst
 - [ ] Flags MBRAS case-insensitive
 - [ ] Anomalias e trending implementados
 - [ ] SHA-256 determinístico para influência
+
+### CI
+- [ ] Criação de um workflow do git actions
+- [ ] Criar um CI de ao menos 3 etapas
 
 ## 🎓 Como começar
 
