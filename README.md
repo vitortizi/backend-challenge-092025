@@ -1,59 +1,43 @@
-# 🚀 MBRAS — Teste Técnico Developer
+# 🚀 MBRAS — Sistema de Análise de Sentimentos
 
-**Bem-vindo ao desafio técnico da MBRAS!** 
+Este projeto implementa um **Sistema de Análise de Sentimentos em Tempo Real** que processa feeds de mensagens e calcula métricas de engajamento usando algoritmos determinísticos.
 
-Este é um teste prático para avaliar suas habilidades em desenvolvimento. Você deve implementar um **Sistema de Análise de Sentimentos em Tempo Real** que processa feeds de mensagens e calcula métricas de engajamento usando algoritmos determinísticos.
+## 📋 O que foi entregue
 
-## 📋 O que você precisa fazer
+1. **API implementada**: Endpoint `/analyze-feed` que processa mensagens
+2. **Testes automatizados**: 6 casos obrigatórios + casos especiais
+3. **Performance com meta definida**: alvo <200ms para 1000 mensagens e teste opcional
+4. **CI configurado**: workflow com ao menos 3 etapas de check
+5. **Repositório pronto para entrega**: publicação em GitHub
 
-1. **Escolha sua linguagem**: Python (FastAPI) ou Go
-2. **Implemente a API**: Endpoint `/analyze-feed` que processa mensagens
-3. **Garanta que todos os testes passem**: 6 casos obrigatórios + casos especiais
-4. **Otimize para performance**: <200ms para 1000 mensagens
-5. **Criar um CI**: Ao menos 3 etapas de check
-6. **Entregue o repositório**: Link público no GitHub
-
-**🎯 Critérios de avaliação**: Algoritmos (50%) + Performance (30%) + Qualidade (20%)
-
-## 🚀 Quickstart
-
-### Python (FastAPI)
-```bash
-# Pré-requisitos: Python 3.11+
-python -m venv .venv && source .venv/bin/activate  # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-```
-
-### Go
-```bash
-# Pré-requisitos: Go 1.21+
-go mod tidy
-go run .
-```
-
-### Testes
-```bash
-# Python
-pytest -q
-
-# Go  
-go test ./... -v
-
-# Performance (opcional)
-RUN_PERF=1 pytest -q tests/test_performance.py
-```
+Pré-requisitos: Python 3.11+. Windows: `.venv\Scripts\activate`.
 
 ## 📡 API
 
 - Endpoint: `POST /analyze-feed`
 - Content-Type: `application/json`
 
-Exemplo
-```bash
-curl -X POST 'http://localhost:8000/analyze-feed' \
-  -H 'Content-Type: application/json' \
-  -d @examples/sample_request.json
+Envie um `POST` para `/analyze-feed` usando o payload de `examples/sample_request.json`.
+
+## 🗺️ Mapa do Fluxo (Mermaid)
+
+```mermaid
+flowchart TD
+    A[POST /analyze-feed] --> B[Validação de payload]
+    B -->|400/422| C[Erro com code/message]
+    B --> D[Filtro por janela temporal]
+    D --> E[Sentimento por mensagem]
+    D --> F[Trending topics]
+    D --> G[Influência por usuário]
+    D --> H[Detecção de anomalias]
+    E --> I[Distribuição de sentimento]
+    G --> J[Ranking de influência]
+    F --> K[Top hashtags]
+    H --> L[Anomaly flag]
+    I --> M[Response JSON]
+    J --> M
+    K --> M
+    L --> M
 ```
 
 ## 🧠 Algoritmos Implementados
@@ -135,28 +119,25 @@ curl -X POST 'http://localhost:8000/analyze-feed' \
 - < 200ms para 1000 mensagens
 - ≤ 20MB memória para 10k mensagens
 
-**Teste local**
-```bash
-RUN_PERF=1 pytest -q tests/test_performance.py
-```
+Para habilitar o teste de performance, execute o pytest com `RUN_PERF=1`.
 
 ## 📁 Estrutura do Projeto
 
 ```
 projeto/
-├── README.md                    # Este arquivo
-├── main.py                      # Servidor FastAPI + função pura
-├── sentiment_analyzer.py        # Lógica de análise
-├── requirements.txt             # Dependências Python
+├── README.md
+├── main.py
+├── sentiment_analyzer.py
+├── requirements.txt
 ├── tests/
-│   ├── test_analyzer.py         # 6 casos obrigatórios
-│   └── test_performance.py      # Testes de performance
+│   ├── test_analyzer.py
+│   └── test_performance.py
 ├── examples/
-│   ├── sample_request.json      # Exemplo básico
-│   └── edge_cases.json          # Casos edge
+│   ├── sample_request.json
+│   └── edge_cases.json
 └── docs/
-    ├── swagger.yaml             # Schema OpenAPI
-    └── algorithm_examples.md    # Exemplos detalhados
+    ├── swagger.yaml
+    └── algorithm_examples.md
 ```
 
 ## 🎯 Detalhes de Implementação Críticos
@@ -187,19 +168,13 @@ Para cálculos: usar tokens originais
 
 ### SHA-256 Determinístico
 ```python
-# ✅ CORRETO
 followers = (int(hashlib.sha256(user_id.encode()).hexdigest(), 16) % 10000) + 100
-
-# ❌ ERRADO (exemplos comuns que não funcionam)
-followers = hash(user_id) % 10000 + 100  # não determinístico
-followers = random.seed(user_id); random.randint(100, 10099)  # incorreto
-followers = abs(hash(user_id.encode())) % 10000 + 100  # ainda não determinístico
-
-# ⚠️ ATENÇÃO: casos especiais requerem tratamento específico
-# - user_ids com Unicode precisam normalização NFKD antes do cálculo
-# - user_ids com exatos 13 caracteres seguem lógica diferente
-# - padrões específicos (ex: terminados em "_prime") têm regras especiais
 ```
+
+Casos especiais:
+- user_ids com Unicode precisam normalização NFKD antes do cálculo
+- user_ids com exatos 13 caracteres seguem lógica diferente
+- padrões específicos (ex: terminados em "_prime") têm regras especiais
 
 ## 🔒 Verificações de Qualidade
 
@@ -217,103 +192,67 @@ followers = abs(hash(user_id.encode())) % 10000 + 100  # ainda não determiníst
 ## 💼 CI
 
 ### GitActions
-- Criar um workflow para o git actions
-- No workflow implementar ao menos um CI de 3 etapas
-- Quanto mais completo e abrangente for o CI, melhor.
-- Ter ao menos uma etapa de checagem de testes unitarios.
+- Workflow do GitHub Actions criado
+- CI com ao menos 3 etapas de check
+- Etapa de checagem de testes unitários incluída
 
-## ✅ Checklist de Entrega
+## ✅ Checklist do que foi entregue
 
 ### Funcionalidade
-- [ ] Todos os 6 casos de teste passam
-- [ ] Endpoint HTTP funcional
-- [ ] Validações 400/422 implementadas
-- [ ] Função pura disponível para testes
+- [x] Todos os 6 casos de teste passam
+- [x] Endpoint HTTP funcional
+- [x] Validações 400/422 implementadas
+- [x] Função pura disponível para testes
 
 ### Performance
-- [ ] < 200ms para 1000 mensagens (opcional)
-- [ ] Uso de memória otimizado
-- [ ] Algoritmos O(n log n) ou melhor
+- [x] < 200ms para 1000 mensagens (opcional)
+- [x] Uso de memória otimizado
+- [x] Algoritmos O(n log n) ou melhor
 
 ### Qualidade
-- [ ] Código organizado e documentado
-- [ ] README com instruções claras (≤ 5 comandos)
-- [ ] Outputs determinísticos
-- [ ] Tratamento de edge cases
+- [x] Código organizado e documentado
+- [x] README com instruções claras (≤ 5 comandos)
+- [x] Outputs determinísticos
+- [x] Tratamento de edge cases
 
 ### Algoritmos
-- [ ] Tokenização/normalização NFKD
-- [ ] Janela temporal relativa ao timestamp da requisição
-- [ ] Ordem de precedência correta no sentimento
-- [ ] Flags MBRAS case-insensitive
-- [ ] Anomalias e trending implementados
-- [ ] SHA-256 determinístico para influência
+- [x] Tokenização/normalização NFKD
+- [x] Janela temporal relativa ao timestamp da requisição
+- [x] Ordem de precedência correta no sentimento
+- [x] Flags MBRAS case-insensitive
+- [x] Anomalias e trending implementados
+- [x] SHA-256 determinístico para influência
 
 ### CI
-- [ ] Criação de um workflow do git actions
-- [ ] Criar um CI de ao menos 3 etapas
+- [x] Criação de um workflow do git actions
+- [x] Criar um CI de ao menos 3 etapas
 
 ## 🎓 Como começar
 
-### 1. **Clone e setup inicial**
+### 1. **Preparar o ambiente**
 ```bash
-git clone <seu-fork-deste-repositorio>
-cd backend-challenge-092025
-
-# Python
-python -m venv .venv && source .venv/bin/activate
+python3 -m venv .venv && source .venv/bin/activate 
 pip install -r requirements.txt
-
-# Go  
-go mod tidy
 ```
 
-### 2. **Execute os testes para entender os requisitos**
+### 2. **Executar testes**
 ```bash
-# Python
-pytest -v tests/test_analyzer.py
-
-# Go
-go test ./... -v
+python -m pytest -v tests/test_analyzer.py
 ```
 
-### 3. **Implemente sua solução**
-- **Python**: Complete `sentiment_analyzer.py` e `main.py`
-- **Go**: Crie seu módulo seguindo a estrutura similar
-
-### 4. **Teste sua implementação**
+### 3. **Executar testes de performance**
 ```bash
-# Inicie o servidor
-uvicorn main:app --reload  # Python
-# ou: go run .              # Go
+RUN_PERF=1 python -m pytest -q tests/test_performance.py
+```
 
-# Teste com curl
+### 4. **Rodar o servidor**
+```bash
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+### 5. **Testar o endpoint**
+```bash
 curl -X POST 'http://localhost:8000/analyze-feed' \
   -H 'Content-Type: application/json' \
   -d @examples/sample_request.json
 ```
-
-### 5. **Valide performance**
-```bash
-RUN_PERF=1 pytest -q tests/test_performance.py
-```
-
-## 📬 Entrega
-
-**Envie o link do repositório GitHub público para `mp@mbras.com.br`**
-
-**Inclua no email**:
-- Link do repositório
-- Linguagem escolhida (Python/Go)  
-- Breve descrição dos desafios encontrados
-- Tempo total gasto na implementação
-
-**Critérios de Avaliação**
-- Algoritmos (50%): Implementação correta e determinística
-- Performance (30%): Otimização e uso eficiente de memória  
-- Qualidade do Código (20%): Organização, legibilidade, tratamento de erros
-
----
-
-**🤔 Dúvidas?** Releia a documentação - todas as especificações estão detalhadas. Parte do teste é interpretar requisitos técnicos complexos.
-

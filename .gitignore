@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+.tox/
+.venv/
+venv/
+env/
+.env
+.python-version
+*.egg-info/
+build/
+dist/
+
+# Go
+bin/
+pkg/
+*.exe
+*.test
+*.out
+
+# Editors/OS
+.idea/
+.vscode/
+.DS_Store
+*.log
