@@ -18,6 +18,12 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
-        
+
+      - name: Validate dependencies
+        run: python -m pip check
+
+      - name: Compile sources
+        run: python -m compileall main.py sentiment_analyzer.py
+
       - name: Run tests
         run: python -m pytest -q
